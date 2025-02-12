@@ -5,7 +5,7 @@ import java.util.List;
 
 import model.dto.Comment;
 
-public class CommentsDAO{ 
+public class CommentsDAO implements DAO<Comment>{ 
 
     private Connection con;
 
@@ -22,7 +22,7 @@ public class CommentsDAO{
     }
 
     public Comment findById(int id) throws SQLException{
-        String query = "SELECT * FROM comment WHERE pk_comment = ?";
+        String query = "SELECT * FROM comments WHERE pk_comment = ?";
         PreparedStatement ps = this.con.prepareStatement(query);
         ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
@@ -38,19 +38,9 @@ public class CommentsDAO{
         return null;
     }
 
-    public void create(Comment joueur) throws SQLException{
-        String query = "INSERT INTO comment (content, fk_user, fk_thread, created_at) VALUES (?, ?, ?, ?)";
-        PreparedStatement ps = this.con.prepareStatement(query);
-        ps.setString(1, joueur.getContent());
-        ps.setInt(2, joueur.getUserId());
-        ps.setInt(3, joueur.getThreadId());
-        ps.setTimestamp(4, joueur.getCreatedAt());
-        ps.executeUpdate();
-    }
-
     public List<Comment> findAll() throws SQLException{
         List<Comment> comments = new ArrayList<Comment>();
-        String query = "SELECT * FROM comment";
+        String query = "SELECT * FROM comments";
         PreparedStatement ps = this.con.prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         while(rs.next()){
@@ -65,10 +55,37 @@ public class CommentsDAO{
         return comments;
     }
 
+    public void create(Comment joueur) throws SQLException{
+        String query = "INSERT INTO comment (content, fk_user, fk_thread, created_at) VALUES (?, ?, ?, ?)";
+        PreparedStatement ps = this.con.prepareStatement(query);
+        ps.setString(1, joueur.getContent());
+        ps.setInt(2, joueur.getUserId());
+        ps.setInt(3, joueur.getThreadId());
+        ps.setTimestamp(4, joueur.getCreatedAt());
+        ps.executeUpdate();
+    }
+
     public void delete(int id) throws SQLException{
-        String query = "DELETE FROM comment WHERE pk_comment = ?";
+        String query = "DELETE FROM comments WHERE pk_comment = ?";
         PreparedStatement ps = this.con.prepareStatement(query);
         ps.setInt(1, id);
         ps.executeUpdate();
+    }
+
+    public Comment save(Comment e) {
+        String query = "UPDATE comments SET content = ?, fk_user = ?, fk_thread = ?, created_at = ? WHERE pk_comment = ?";
+        try {
+            PreparedStatement ps = this.con.prepareStatement(query);
+            ps.setString(1, e.getContent());
+            ps.setInt(2, e.getUserId());
+            ps.setInt(3, e.getThreadId());
+            ps.setTimestamp(4, e.getCreatedAt());
+            ps.setInt(5, e.getId());
+            ps.executeUpdate();
+            return e;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

@@ -1,13 +1,12 @@
 package model.dto;
 
-import java.sql.Time;
-
+import java.sql.Timestamp;
 public class Subscription {
     
     private int id;
     private int userId;
     private int threadId;
-    private Time createdAt;
+    private Timestamp createdAt;
 
     public Subscription(int id, int userId, int threadId) {
         this.id = id;
@@ -41,11 +40,11 @@ public class Subscription {
         this.threadId = threadId;
     }
 
-    public Time getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Time createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 }

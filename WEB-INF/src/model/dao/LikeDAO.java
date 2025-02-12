@@ -5,7 +5,7 @@ import java.util.List;
 
 import model.dto.Like;
 
-public class LikeDAO {
+public class LikeDAO implements DAO<Like>{
 
     private Connection con;
 
@@ -22,7 +22,7 @@ public class LikeDAO {
     }
 
     public Like findById(int id) throws SQLException{
-        String query = "SELECT * FROM like WHERE pk_like = ?";
+        String query = "SELECT * FROM likes WHERE pk_like = ?";
         PreparedStatement ps = this.con.prepareStatement(query);
         ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
@@ -37,18 +37,9 @@ public class LikeDAO {
         return null;
     }
 
-    public void create(Like joueur) throws SQLException{
-        String query = "INSERT INTO like (fk_user, fk_comment, created_at) VALUES (?, ?, ?)";
-        PreparedStatement ps = this.con.prepareStatement(query);
-        ps.setInt(1, joueur.getUserId());
-        ps.setInt(2, joueur.getCommentId());
-        ps.setTimestamp(3, joueur.getCreatedAt());
-        ps.executeUpdate();
-    }
-
     public List<Like> findAll()throws SQLException{
         List<Like> likes = new ArrayList<Like>();
-        String query = "SELECT * FROM like";
+        String query = "SELECT * FROM likes";
         PreparedStatement ps = this.con.prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         while(rs.next()){
@@ -62,10 +53,34 @@ public class LikeDAO {
         return likes;
     }
 
+    public void create(Like joueur) throws SQLException{
+        String query = "INSERT INTO likes (fk_user, fk_comment, created_at) VALUES (?, ?, ?)";
+        PreparedStatement ps = this.con.prepareStatement(query);
+        ps.setInt(1, joueur.getUserId());
+        ps.setInt(2, joueur.getCommentId());
+        ps.setTimestamp(3, joueur.getCreatedAt());
+        ps.executeUpdate();
+    }
+
     public void delete(int id)throws SQLException{
-        String query = "DELETE FROM like WHERE pk_like = ?";
+        String query = "DELETE FROM likes WHERE pk_like = ?";
         PreparedStatement ps = this.con.prepareStatement(query);
         ps.setInt(1, id);
         ps.executeUpdate();
+    }
+
+    public Like save(Like e) throws SQLException {
+        String query = "INSERT INTO likes (fk_user, fk_comment, created_at) VALUES (?, ?, ?)";
+        PreparedStatement ps = this.con.prepareStatement(query);
+        ps.setInt(1, e.getUserId());
+        ps.setInt(2, e.getCommentId());
+        ps.setTimestamp(3, e.getCreatedAt());
+        ps.executeUpdate();
+        ResultSet rs = ps.getGeneratedKeys();
+        if(rs.next()){
+            e.setId(rs.getInt(1));
+            return e;
+        }
+        return null;
     }
 }

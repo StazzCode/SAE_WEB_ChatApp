@@ -5,7 +5,7 @@ import java.util.List;
 
 import model.dto.User;
 
-public class UsersDAO {
+public class UsersDAO implements DAO<User>{
 
     private Connection con;
 
@@ -22,7 +22,7 @@ public class UsersDAO {
     }
 
     public User findById(int id) throws SQLException{
-        String query = "SELECT * FROM utilisateur WHERE pk_user = ?";
+        String query = "SELECT * FROM users WHERE pk_user = ?";
         PreparedStatement ps = this.con.prepareStatement(query);
         ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
@@ -37,18 +37,9 @@ public class UsersDAO {
         return null;
     }
 
-    public void create(User joueur) throws SQLException{
-        String query = "INSERT INTO utilisateur (username, password, created_at) VALUES (?, ?, ?)";
-        PreparedStatement ps = this.con.prepareStatement(query);
-        ps.setString(1, joueur.getUsername());
-        ps.setString(2, joueur.getPassword());
-        ps.setTimestamp(3, joueur.getCreatedAt());
-        ps.executeUpdate();
-    }
-
     public List<User> findAll() throws SQLException{
         List<User> utilisateurs = new ArrayList<User>();
-        String query = "SELECT * FROM utilisateur";
+        String query = "SELECT * FROM users";
         PreparedStatement ps = this.con.prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         while(rs.next()){
@@ -62,10 +53,29 @@ public class UsersDAO {
         return utilisateurs;
     }
 
+    public void create(User joueur) throws SQLException{
+        String query = "INSERT INTO users (username, password, created_at) VALUES (?, ?, ?)";
+        PreparedStatement ps = this.con.prepareStatement(query);
+        ps.setString(1, joueur.getUsername());
+        ps.setString(2, joueur.getPassword());
+        ps.setTimestamp(3, joueur.getCreatedAt());
+        ps.executeUpdate();
+    }
+
     public void delete(int id) throws SQLException{
-        String query = "DELETE FROM utilisateur WHERE pk_user = ?";
+        String query = "DELETE FROM users WHERE pk_user = ?";
         PreparedStatement ps = this.con.prepareStatement(query);
         ps.setInt(1, id);
         ps.executeUpdate();
+    }
+
+    public User save(User e) throws SQLException {
+        String query = "UPDATE users SET username = ?, password = ? WHERE pk_user = ?";
+        PreparedStatement ps = this.con.prepareStatement(query);
+        ps.setString(1, e.getUsername());
+        ps.setString(2, e.getPassword());
+        ps.setInt(3, e.getId());
+        ps.executeUpdate();
+        return e;
     }
 }
