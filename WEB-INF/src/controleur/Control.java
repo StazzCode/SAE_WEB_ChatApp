@@ -2,7 +2,6 @@ package controleur;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,8 +9,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import model.dao.*;
-import model.dto.*;
+import model.dao.UsersDAO;
+
 @WebServlet("/Control")
 public class Control extends HttpServlet {
 
@@ -32,9 +31,6 @@ public class Control extends HttpServlet {
             String vue = "";
 
             switch(action) {
-                case "creerCompte":
-                    vue = "WEB-INF/vue/creerCompte.jsp";
-                    break;
                 case "authentifier":
                     vue = "WEB-INF/vue/authentifier.jsp";
                     break;
@@ -45,8 +41,14 @@ public class Control extends HttpServlet {
                     vue = "WEB-INF/vue/posterMessage.jsp";
                     break;
                 case "likeMessage":
-                    vue = "WEB-INF/vue/lireMessages.jsp";
+                    likeMessage(request, response);
                     break;
+                case "Acceuil":
+                    vue = "WEB-INF/vue/index.jsp";
+                    break;
+                case "profil":
+                vue = "WEB-INF/vue/profil.jsp";
+                    break;                
                 default:
                     vue = "WEB-INF/vue/index.jsp";
                     break;
@@ -58,34 +60,7 @@ public class Control extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            String action = request.getParameter("action");
-
-            switch(action) {
-                case "creerCompte":
-                    creerCompte(request, response);
-                    break;
-                case "authentifier":
-                    //authentifier(request, response);
-                    break;
-                case "creerFil":
-                    //creerFil(request, response);
-                    break;
-                case "posterMessage":
-                    //posterMessage(request, response);
-                    break;
-                default:
-                    response.sendRedirect("index.jsp");
-                    break;
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private void creerCompte(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
-        response.sendRedirect("index.jsp");
+    public void likeMessage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("WEB-INF/vue/index.jsp").forward(request, response);
     }
 }
