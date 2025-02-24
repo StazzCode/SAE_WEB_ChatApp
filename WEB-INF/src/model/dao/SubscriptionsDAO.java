@@ -3,80 +3,80 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.ds.DS;
 import model.dto.Subscription;
 
 public class SubscriptionsDAO implements DAO<Subscription>{
 
-    private Connection con;
+    public Subscription findById(int id) throws SQLException{
+        Subscription subscription = new Subscription();
+        try (Connection con = DS.instance.getConnection()){
+            String query = "SELECT * FROM subscriptions WHERE id = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                subscription.setId(rs.getInt("id"));
+                subscription.setUserId(rs.getInt("user_id"));
+                subscription.setThreadId(rs.getInt("thread_id"));
+                subscription.setCreatedAt(rs.getTimestamp("created_at"));
+            }
+        } catch (SQLException e ){
+            System.out.println(e.getMessage());
+        }
+        return subscription;
+    }
 
-    public SubscriptionsDAO() throws SQLException{
-        try {
-            Class.forName("org.postgresql.Driver");
-            String url = "jdbc:postgresql://psqlserv:5432/but2";
-            String nom = "antoinedomisseetu";
-            String mdp = "moi";
-            this.con = DriverManager.getConnection(url,nom,mdp);
-        } catch (Exception e) {
+    public List<Subscription> findAll() throws SQLException{
+        try (Connection con = DS.instance.getConnection()){
+            List<Subscription> subscriptions = new ArrayList<Subscription>();
+            String query = "SELECT * FROM subscriptions";
+            PreparedStatement ps = con.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                subscriptions.add(findById(rs.getInt("id")));
+            }
+            return subscriptions;
+        } catch (SQLException e ){
             System.out.println(e.getMessage());
         }
     }
 
-    public Subscription findById(int id) throws SQLException{
-        String query = "SELECT * FROM subscriptions WHERE pk_subscription = ?";
-        PreparedStatement ps = this.con.prepareStatement(query);
-        ps.setInt(1, id);
-        ResultSet rs = ps.executeQuery();
-        if(rs.next()){
-            Subscription subscription = new Subscription();
-            subscription.setId(rs.getInt("pk_subscription"));
-            subscription.setUserId(rs.getInt("fk_user"));
-            subscription.setThreadId(rs.getInt("fk_thread"));
-            subscription.setCreatedAt(rs.getTimestamp("created_at"));
-            return subscription;
-        }
-        return null;
-    }
-
-    public List<Subscription> findAll() throws SQLException{
-        List<Subscription> subscriptions = new ArrayList<Subscription>();
-        String query = "SELECT * FROM subscriptions";
-        PreparedStatement ps = this.con.prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
-        while(rs.next()){
-            Subscription subscription = new Subscription();
-            subscription.setId(rs.getInt("pk_subscription"));
-            subscription.setUserId(rs.getInt("fk_user"));
-            subscription.setThreadId(rs.getInt("fk_thread"));
-            subscription.setCreatedAt(rs.getTimestamp("created_at"));
-            subscriptions.add(subscription);
-        }
-        return subscriptions;
-    }
-
     public void create(Subscription joueur) throws SQLException{
-        String query = "INSERT INTO subscriptions (fk_user, fk_thread, created_at) VALUES (?, ?, ?)";
-        PreparedStatement ps = this.con.prepareStatement(query);
-        ps.setInt(1, joueur.getUserId());
-        ps.setInt(2, joueur.getThreadId());
-        ps.setTimestamp(3, joueur.getCreatedAt());
-        ps.executeUpdate();
+        try (Connection con = DS.instance.getConnection()){
+            String query = "INSERT INTO subscriptions (user_id, thread_id, created_at) VALUES (?, ?, ?)";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, joueur.getUserId());
+            ps.setInt(2, joueur.getThreadId());
+            ps.setTimestamp(3, joueur.getCreatedAt());
+            ps.executeUpdate();
+        } catch (SQLException e ){
+            System.out.println(e.getMessage());
+        }
     }
 
     public void delete(int id) throws SQLException{
-        String query = "DELETE FROM subscriptions WHERE pk_subscription = ?";
-        PreparedStatement ps = this.con.prepareStatement(query);
-        ps.setInt(1, id);
-        ps.executeUpdate();        
+        try (Connection con = DS.instance.getConnection()){
+            String query = "DELETE FROM subscriptions WHERE id = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e ){
+            System.out.println(e.getMessage());
+        }
     }
 
-    public Subscription save(Subscription e) throws SQLException {
-        String query = "UPDATE subscriptions SET fk_user = ?, fk_thread = ?, created_at = ? WHERE pk_subscription = ?";
-        PreparedStatement ps = this.con.prepareStatement(query);
-        ps.setInt(1, e.getUserId());
-        ps.setInt(2, e.getThreadId());
-        ps.setTimestamp(3, e.getCreatedAt());
-        ps.setInt(4, e.getId());
-        ps.executeUpdate();
-        return e;
+    public void save(Subscription subscription) throws SQLException {
+        try (Connection con = DS.instance.getConnection()){
+            String query = "UPDATE subscriptions SET user_id = ?, thread_id = ?, created_at = ? WHERE id = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, subscription.getUserId());
+            ps.setInt(2, subscription.getThreadId());
+            ps.setTimestamp(3, subscription.getCreatedAt());
+            ps.setInt(4, subscription.getId());
+            ps.executeUpdate();
+        } catch (SQLException e ){
+            System.out.println(e.getMessage());
+        }
     }
 }

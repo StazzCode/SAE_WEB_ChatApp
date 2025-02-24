@@ -8,6 +8,6 @@ public interface DAO<E> {
     public List<E> findAll() throws SQLException;
     public void create(E e) throws SQLException;
     public void delete(int id) throws SQLException;
-    public E save(E e) throws SQLException;
+    public void save(E e) throws SQLException;
 
 }
