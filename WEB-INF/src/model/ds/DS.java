@@ -20,9 +20,16 @@ public class DS {
         String mdp = "moi";
          */
 
+        /*
         String url = "jdbc:postgresql://psqlserv/but2";
         String nom = "antoinedomisseetu";
         String mdp = "moi";
+
+         */
+
+        String url = "jdbc:postgresql://localhost/kellianmirey";
+        String nom = "kellianmirey";
+        String mdp = "";
 
         return DriverManager.getConnection(url,nom,mdp);
     }

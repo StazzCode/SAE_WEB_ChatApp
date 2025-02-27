@@ -5,14 +5,14 @@ import java.sql.Timestamp;
 public class Post {
     
     private int id;
-    private int senderId;
+    private int authorId;
     private int threadId;
     private String content;
     private Timestamp createdAt;
 
-    public Post(int id, int senderId, int threadId, String content, Timestamp createdAt) {
+    public Post(int id, int authorId, int threadId, String content, Timestamp createdAt) {
         this.id = id;
-        this.senderId = senderId;
+        this.authorId = authorId;
         this.threadId = threadId;
         this.content = content;
         this.createdAt = createdAt;
@@ -28,12 +28,12 @@ public class Post {
         this.id = id;
     }
 
-    public int getSenderId() {
-        return senderId;
+    public int getAuthorId() {
+        return authorId;
     }
 
-    public void setSenderId(int senderId) {
-        this.senderId = senderId;
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
     }
 
     public String getContent() {

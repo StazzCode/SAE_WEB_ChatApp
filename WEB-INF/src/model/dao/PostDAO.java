@@ -17,7 +17,7 @@ public class PostDAO implements DAO<Post>{
             if(rs.next()){
                 Post post = new Post();
                 post.setId(rs.getInt("id"));
-                post.setSenderId((rs.getInt("author_id")));
+                post.setAuthorId((rs.getInt("author_id")));
                 post.setThreadId(rs.getInt("thread_id"));
                 post.setContent(rs.getString("content"));
                 post.setCreatedAt(rs.getTimestamp("created_at"));
@@ -49,7 +49,7 @@ public class PostDAO implements DAO<Post>{
             String query = "INSERT INTO Posts (content, author_id, thread_id, created_at) VALUES (?, ?, ?, ?)";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, joueur.getContent());
-            ps.setInt(2, joueur.getSenderId());
+            ps.setInt(2, joueur.getAuthorId());
             ps.setInt(3, joueur.getThreadId());
             ps.setTimestamp(4, joueur.getCreatedAt());
             ps.executeUpdate();
@@ -74,7 +74,7 @@ public class PostDAO implements DAO<Post>{
             String query = "UPDATE Posts SET content = ?, author_id = ?, thread_id = ?, created_at = ? WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, post.getContent());
-            ps.setInt(2, post.getSenderId());
+            ps.setInt(2, post.getAuthorId());
             ps.setInt(3, post.getThreadId());
             ps.setTimestamp(4, post.getCreatedAt());
             ps.setInt(5, post.getId());

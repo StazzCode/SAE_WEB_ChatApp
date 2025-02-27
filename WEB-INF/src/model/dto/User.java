@@ -1,22 +1,22 @@
 package model.dto;
 
 import java.sql.Timestamp;
-import java.util.List;
+import java.util.ArrayList;
 
 public class User {
     
     private int id;
     private String username;
     private String password;
-    private List<Thread> threads;
+    private ArrayList<Thread> threads;
     private Timestamp createdAt;
 
-    public User(int id, String username, String password, List<Thread> threads, Timestamp createdAt) {
+    public User(int id, String username, String password, ArrayList<Thread> threads, Timestamp createdAt) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.createdAt = createdAt;
         this.threads = threads;
+        this.createdAt = createdAt;
     }
 
     public User() {}
@@ -53,11 +53,11 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public List<Thread> getThreads() {
+    public ArrayList<Thread> getThreads() {
         return threads;
     }
 
-    public void setThreads(List<Thread> threads) {
+    public void setThreads(ArrayList<Thread> threads) {
         this.threads = threads;
     }
 }

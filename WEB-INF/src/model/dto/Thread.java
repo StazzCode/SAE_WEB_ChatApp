@@ -6,14 +6,12 @@ public class Thread {
     
     private int id;
     private String title;
-    private String content;
     private int userId;
     private Timestamp createdAt;
 
     public Thread(int id, String title, String content, int userId, Timestamp createdAt) {
         this.id = id;
         this.title = title;
-        this.content = content;
         this.userId = userId;
         this.createdAt = createdAt;
     }
@@ -34,14 +32,6 @@ public class Thread {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public int getUserId() {
