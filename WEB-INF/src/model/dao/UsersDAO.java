@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.ds.DS;
+import model.dto.Thread;
 import model.dto.User;
 
 public class UsersDAO implements DAO<User>{
@@ -18,12 +19,21 @@ public class UsersDAO implements DAO<User>{
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 PreparedStatement threadsPS = con.prepareStatement(threadsQuery);
-                ps.setInt(1, id);
-                ResultSet threadsRS = ps.executeQuery();
-
+                threadsPS.setInt(1, id);
+                ResultSet threadsRS = threadsPS.executeQuery();
+                ArrayList<Thread> threads = new ArrayList<>();
+                while (threadsRS.next()){
+                    Thread thread = new Thread();
+                    thread.setId(threadsRS.getInt("id"));
+                    thread.setTitle(threadsRS.getString("title"));
+                    thread.setUserId(threadsRS.getInt("owner_id"));
+                    thread.setCreatedAt(threadsRS.getTimestamp("created_at"));
+                    threads.add(thread);
+                }
                 utilisateur.setId(rs.getInt("id"));
                 utilisateur.setUsername(rs.getString("username"));
                 utilisateur.setPassword(rs.getString("password"));
+                utilisateur.setThreads(threads);
                 utilisateur.setCreatedAt(rs.getTimestamp("created_at"));
             }
         } catch (SQLException e){
