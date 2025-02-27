@@ -42,6 +42,25 @@ public class UsersDAO implements DAO<User>{
         return utilisateur;
     }
 
+    public User findByUsername(String username) throws SQLException{
+        User utilisateur = new User();
+        try (Connection con = DS.instance.getConnection()){
+            String query = "SELECT id,username,password,created_at FROM users WHERE username = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                utilisateur.setId(rs.getInt("id"));
+                utilisateur.setUsername(rs.getString("username"));
+                utilisateur.setPassword(rs.getString("password"));
+                utilisateur.setCreatedAt(rs.getTimestamp("created_at"));
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return utilisateur;
+    }
+
     public List<User> findAll() throws SQLException{
         List<User> utilisateurs = new ArrayList<User>();
         try (Connection con = DS.instance.getConnection()){

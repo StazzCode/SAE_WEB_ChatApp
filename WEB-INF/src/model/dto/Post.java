@@ -2,7 +2,7 @@ package model.dto;
 
 import java.sql.Timestamp;
 
-public class Message {
+public class Post {
     
     private int id;
     private int senderId;
@@ -10,7 +10,7 @@ public class Message {
     private String content;
     private Timestamp createdAt;
 
-    public Message(int id, int senderId, int receiverId, String content, Timestamp createdAt) {
+    public Post(int id, int senderId, int receiverId, String content, Timestamp createdAt) {
         this.id = id;
         this.senderId = senderId;
         this.receiverId = receiverId;
@@ -18,7 +18,7 @@ public class Message {
         this.createdAt = createdAt;
     }
 
-    public Message() {}
+    public Post() {}
 
     public int getId() {
         return id;
