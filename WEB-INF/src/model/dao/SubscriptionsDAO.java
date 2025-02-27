@@ -28,8 +28,8 @@ public class SubscriptionsDAO implements DAO<Subscription>{
     }
 
     public List<Subscription> findAll() throws SQLException{
+        List<Subscription> subscriptions = new ArrayList<Subscription>();
         try (Connection con = DS.instance.getConnection()){
-            List<Subscription> subscriptions = new ArrayList<Subscription>();
             String query = "SELECT * FROM subscriptions";
             PreparedStatement ps = con.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
@@ -40,6 +40,7 @@ public class SubscriptionsDAO implements DAO<Subscription>{
         } catch (SQLException e ){
             System.out.println(e.getMessage());
         }
+        return subscriptions;
     }
 
     public void create(Subscription joueur) throws SQLException{

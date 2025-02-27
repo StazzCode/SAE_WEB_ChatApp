@@ -6,14 +6,14 @@ public class Post {
     
     private int id;
     private int senderId;
-    private int receiverId;
+    private int threadId;
     private String content;
     private Timestamp createdAt;
 
-    public Post(int id, int senderId, int receiverId, String content, Timestamp createdAt) {
+    public Post(int id, int senderId, int threadId, String content, Timestamp createdAt) {
         this.id = id;
         this.senderId = senderId;
-        this.receiverId = receiverId;
+        this.threadId = threadId;
         this.content = content;
         this.createdAt = createdAt;
     }
@@ -36,14 +36,6 @@ public class Post {
         this.senderId = senderId;
     }
 
-    public int getReceiverId() {
-        return receiverId;
-    }
-
-    public void setReceiverId(int receiverId) {
-        this.receiverId = receiverId;
-    }
-
     public String getContent() {
         return content;
     }
@@ -58,5 +50,13 @@ public class Post {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getThreadId() {
+        return threadId;
+    }
+
+    public void setThreadId(int threadId) {
+        this.threadId = threadId;
     }
 }

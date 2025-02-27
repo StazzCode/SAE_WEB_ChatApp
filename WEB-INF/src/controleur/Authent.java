@@ -3,6 +3,7 @@ import java.io.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import model.dao.UsersDAO;
+import model.dto.User;
 import jakarta.servlet.annotation.WebServlet;
 import java.sql.*;
 @WebServlet("/Authent")
