@@ -28,25 +28,25 @@ public class Control extends HttpServlet {
 
             switch(action) {
                 case "authentifier":
-                    vue = "WEB-INF/vue/authentifier.jsp";
+                    vue = "WEB-INF/src/vue/login.jsp";
                     break;
-                case "creerFil":
-                    vue = "WEB-INF/vue/creerFil.jsp";
+                case "register":
+                    vue = "WEB-INF/src/vue/register.jsp";
                     break;
                 case "posterMessage":
-                    vue = "WEB-INF/vue/posterMessage.jsp";
+                    vue = "WEB-INF/src/vue/posterMessage.jsp";
                     break;
                 case "likeMessage":
                     likeMessage(request, response);
                     break;
                 case "Acceuil":
-                    vue = "WEB-INF/vue/index.jsp";
+                    vue = "WEB-INF/src/vue/index.jsp";
                     break;
                 case "profil":
-                vue = "WEB-INF/vue/profil.jsp";
+                vue = "WEB-INF/src/vue/profil.jsp";
                     break;                
                 default:
-                    vue = "WEB-INF/vue/index.jsp";
+                    vue = "WEB-INF/src/vue/index.jsp";
                     break;
             }
 

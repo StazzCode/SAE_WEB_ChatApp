@@ -113,4 +113,19 @@ public class UsersDAO implements DAO<User>{
             System.out.println(e.getMessage());
         }
     }
+
+    public boolean save(String username, String password) throws SQLException {
+        try (Connection con = DS.instance.getConnection()){
+            String query = "INSERT INTO users (username, password, created_at) VALUES (?, ?, ?)";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 }

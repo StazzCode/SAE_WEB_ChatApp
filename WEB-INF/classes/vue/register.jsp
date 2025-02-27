@@ -3,19 +3,17 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Connexion</title>
+    <title>Créer un compte</title>
 </head>
 <body>
     <div class="container">
-        <h2>Connexion à IUT Link</h2>
-        <form action="Control?action=login" method="post">
+        <h2>Créer un compte</h2>
+        <form action="controleur?action=register" method="post">
             <input type="text" name="username" placeholder="Nom d'utilisateur" required>
             <input type="password" name="password" placeholder="Mot de passe" required>
             <button type="submit">Se connecter</button>
         </form>
-        <div>
-            <p>Pas de compte ? <a href="Control?action=register">Créer un compte</a></p>
-        </div>
+        <p>Déjà un compte ? <a href="login.jsp">Se connecter</a></p>
     </div>
 </body>
 </html>

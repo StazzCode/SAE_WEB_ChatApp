@@ -5,7 +5,6 @@ import jakarta.servlet.http.*;
 import model.dao.UsersDAO;
 import model.dto.User;
 import jakarta.servlet.annotation.WebServlet;
-import java.sql.*;
 @WebServlet("/Authent")
 public class Authent extends HttpServlet{
     public void doPost( HttpServletRequest req, HttpServletResponse res )
@@ -24,17 +23,17 @@ public class Authent extends HttpServlet{
                     utilisateur = usersDAO.findByUsername(userName);
                     if(utilisateur != null && utilisateur.getUsername().equals(userName)) {
                         session.setAttribute("user", utilisateur);
-                        vue = "WEB-INF/vue/home.jsp";
+                        vue = "WEB-INF/src/vue/home.jsp";
                     } else {
-                        vue = "WEB-INF/vue/login.jsp";
+                        vue = "WEB-INF/src/vue/login.jsp";
                     }
                     break;
                 case "register":
                     if(usersDAO.save(userName, password)) {
                         session.setAttribute("user", userName);
-                        vue = "WEB-INF/vue/home.jsp";
+                        vue = "WEB-INF/src/vue/home.jsp";
                     } else {
-                        vue = "WEB-INF/vue/login.jsp";
+                        vue = "WEB-INF/src/vue/register.jsp";
                     }
                     break;
             }
