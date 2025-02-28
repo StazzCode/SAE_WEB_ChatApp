@@ -1,6 +1,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="model.dto.User" %>
-<%@ page import="model.dto.Thread" %><%--
+<%@ page import="model.dto.Thread" %>
+<%@ page import="model.dto.Post" %><%--
   Created by IntelliJ IDEA.
   User: kellianmirey
   Date: 20/02/2025
@@ -16,9 +17,9 @@
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 </head>
 <%
-
   User user = (User) request.getSession().getAttribute("user");
   ArrayList<Thread> threads = user.getThreads();
+  Thread selectedThread = (Thread) request.getSession().getAttribute("selectedThread");
 %>
 <body>
   <div class="flex flex-row w-screen h-screen">
@@ -39,20 +40,40 @@
         </div>
         <% if (threads != null){ for(Thread t : threads) { %>
           <div class="thread">
-            <a><%=t.getTitle()%></a>
+            <a href="${pageContext.request.contextPath}/homepage?selectedThread=<%= t.getId() %>"><%=t.getTitle()%></a>
           </div>
-        <% }} else {%> <a><%=user.getUsername()%></a> <%} %>
+        <% }} %> <!-- Fin de la boucle -->
       </div>
     </div>
     <div class="postsContainer flex-3 bg-gray-100">
-      <div class="posts">
+      <% if (selectedThread != null) { %>
+      <div class="postHeader">
+        <h4><%=selectedThread.getTitle()%></h4>
+        <a>ThreadSettings</a>
+      </div>
+      <% } %>
+      <div class="posts grid grid-cols-1" <% if (selectedThread == null) {%> style="display: none" <%} %>>
+        <%
+          ArrayList<Post> posts = (selectedThread != null) ? selectedThread.getPosts() : null;
+
+          if (posts != null) {
+            for(Post p : posts) { %>
+              <div class="post flex flex-col w-1/2 <% if (p.getAuthor().getId() == user.getId()) { %> justify-self-end items-end<% } %>">
+                <div class="user">
+                  <a><%= p.getAuthor().getUsername() %></a>
+                </div>
+                <div class="message">
+                  <p><%= p.getContent() %></p>
+                </div>
+              </div>
+        <% } } %>
 
       </div>
-      <div class="postEntryContainer absolute w-3/4 bottom-0 p-8">
+      <div class="postEntryContainer absolute w-3/4 bottom-0 p-8" <% if (selectedThread == null) {%> style="display: none" <%} %>>
         <div class="userEntry">
-          <form class="flex justify-between [&>input]:px-6">
-            <input class="bg-gray-300 flex-1" type="text" name="message" placeholder="Message">
-            <input type="submit" name="submit" value="Envoyer">
+          <form action="${pageContext.request.contextPath}/homepage" method="post" class="flex justify-between [&>input]:px-6">
+            <input class="bg-gray-300 flex-1" type="text" name="message" placeholder="Message" required>
+            <input type="submit" id="submit" value="Envoyer">
           </form>
         </div>
       </div>
