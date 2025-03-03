@@ -8,7 +8,7 @@ import model.dto.Subscription;
 
 public class SubscriptionsDAO implements DAO<Subscription>{
 
-    public Subscription findById(int id) throws SQLException{
+    public Subscription findById(int id){
         Subscription subscription = new Subscription();
         try (Connection con = DS.instance.getConnection()){
             String query = "SELECT * FROM subscriptions WHERE id = ?";
@@ -27,7 +27,7 @@ public class SubscriptionsDAO implements DAO<Subscription>{
         return subscription;
     }
 
-    public List<Subscription> findAll() throws SQLException{
+    public List<Subscription> findAll(){
         List<Subscription> subscriptions = new ArrayList<Subscription>();
         try (Connection con = DS.instance.getConnection()){
             String query = "SELECT * FROM subscriptions";
@@ -43,20 +43,20 @@ public class SubscriptionsDAO implements DAO<Subscription>{
         return subscriptions;
     }
 
-    public void create(Subscription joueur) throws SQLException{
+    public void create(Subscription subscription){
         try (Connection con = DS.instance.getConnection()){
             String query = "INSERT INTO subscriptions (user_id, thread_id, created_at) VALUES (?, ?, ?)";
             PreparedStatement ps = con.prepareStatement(query);
-            ps.setInt(1, joueur.getUserId());
-            ps.setInt(2, joueur.getThreadId());
-            ps.setTimestamp(3, joueur.getCreatedAt());
+            ps.setInt(1, subscription.getUserId());
+            ps.setInt(2, subscription.getThreadId());
+            ps.setTimestamp(3, subscription.getCreatedAt());
             ps.executeUpdate();
         } catch (SQLException e ){
             System.out.println(e.getMessage());
         }
     }
 
-    public void delete(int id) throws SQLException{
+    public void delete(int id){
         try (Connection con = DS.instance.getConnection()){
             String query = "DELETE FROM subscriptions WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(query);
@@ -67,7 +67,7 @@ public class SubscriptionsDAO implements DAO<Subscription>{
         }
     }
 
-    public void save(Subscription subscription) throws SQLException {
+    public void save(Subscription subscription){
         try (Connection con = DS.instance.getConnection()){
             String query = "UPDATE subscriptions SET user_id = ?, thread_id = ?, created_at = ? WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(query);

@@ -32,6 +32,7 @@ public class ThreadsDAO implements DAO<Thread>{
                 thread.setId(rs.getInt("id"));
                 thread.setTitle(rs.getString("title"));
                 thread.setUserId(rs.getInt("owner_id"));
+                thread.setOwnerUsername(new UsersDAO().findById(rs.getInt("owner_id")).getUsername());
                 thread.setPosts(posts);
                 thread.setCreatedAt(rs.getTimestamp("created_at"));
             }
@@ -41,8 +42,41 @@ public class ThreadsDAO implements DAO<Thread>{
         return thread;
     }
 
-    public List<Thread> findAll() {
-        List<Thread> threads = null;
+    public Thread findByTitle(String title){
+        Thread thread = new Thread();
+        try (Connection con = DS.instance.getConnection()){
+            String query = "SELECT * FROM threads WHERE title = ?";
+            String postsQuery = "SELECT id,author_id,thread_id,content,created_at FROM posts WHERE thread_id = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, title);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                PreparedStatement postsPS = con.prepareStatement(postsQuery);
+                postsPS.setInt(1, rs.getInt("id"));
+                ResultSet postsRS = postsPS.executeQuery();
+                ArrayList<Post> posts = new ArrayList<>();
+                while (postsRS.next()){
+                    Post post = new Post();
+                    post.setAuthor(new UsersDAO().findById(postsRS.getInt("author_id")));
+                    post.setThreadId(postsRS.getInt("thread_id"));
+                    post.setContent(postsRS.getString("content"));
+                    posts.add(post);
+                }
+                thread.setId(rs.getInt("id"));
+                thread.setTitle(rs.getString("title"));
+                thread.setUserId(rs.getInt("owner_id"));
+                thread.setOwnerUsername(new UsersDAO().findById(rs.getInt("owner_id")).getUsername());
+                thread.setPosts(posts);
+                thread.setCreatedAt(rs.getTimestamp("created_at"));
+            }
+        } catch (SQLException e ){
+            System.out.println(e.getMessage());
+        }
+        return thread;
+    }
+
+    public ArrayList<Thread> findAll() {
+        ArrayList<Thread> threads = null;
         try (Connection con = DS.instance.getConnection()) {
             threads = new ArrayList<Thread>();
             String query = "SELECT * FROM threads";
@@ -59,11 +93,10 @@ public class ThreadsDAO implements DAO<Thread>{
 
     public void create(Thread thread) {
         try (Connection con = DS.instance.getConnection()){
-            String query = "INSERT INTO threads (title, owner_id, created_at) VALUES (?, ?, ?)";
+            String query = "INSERT INTO threads (title, owner_id) VALUES (?, ?)";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, thread.getTitle());
             ps.setInt(2, thread.getUserId());
-            ps.setTimestamp(3, thread.getCreatedAt());
             ps.executeUpdate();
         } catch (SQLException e){
             System.out.println(e.getMessage());

@@ -26,12 +26,9 @@ public class HomePageController extends HttpServlet {
         UsersDAO usersDAO = new UsersDAO();
         ThreadsDAO threadsDAO = new ThreadsDAO();
         User user;
-        try {
-            user = usersDAO.findById(1);
-            req.getSession().setAttribute("user", user);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+
+        user = usersDAO.findById(1);
+        req.getSession().setAttribute("user", user);
 
         String selectedThreadParam = req.getParameter("selectedThread");
 

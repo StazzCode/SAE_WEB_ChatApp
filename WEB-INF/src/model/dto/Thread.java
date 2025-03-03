@@ -8,15 +8,23 @@ public class Thread {
     private int id;
     private String title;
     private int userId;
+    private String ownerUsername;
     private ArrayList<Post> posts;
     private Timestamp createdAt;
 
-    public Thread(int id, String title, int userId, ArrayList<Post> posts, Timestamp createdAt) {
+    public Thread(int id, String title, int userId, String ownerUsername, ArrayList<Post> posts, Timestamp createdAt) {
         this.id = id;
         this.title = title;
         this.userId = userId;
+        this.ownerUsername = ownerUsername;
         this.posts = posts;
         this.createdAt = createdAt;
+    }
+
+    public Thread(String title, int id, String username) {
+        this.title = title;
+        this.userId = id;
+        this.ownerUsername = username;
     }
 
     public Thread() {}
@@ -44,6 +52,10 @@ public class Thread {
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
+    public String getOwnerUsername() {return ownerUsername;}
+
+    public void setOwnerUsername(String ownerUsername) {this.ownerUsername = ownerUsername;}
 
     public Timestamp getCreatedAt() {
         return createdAt;

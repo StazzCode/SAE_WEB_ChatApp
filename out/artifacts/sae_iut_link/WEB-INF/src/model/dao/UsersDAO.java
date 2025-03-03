@@ -9,31 +9,18 @@ import model.dto.User;
 
 public class UsersDAO implements DAO<User>{
 
-    public User findById(int id) throws SQLException{
+    public User findById(int id){
         User utilisateur = new User();
         try (Connection con = DS.instance.getConnection()){
             String query = "SELECT id,username,password,created_at FROM users WHERE id = ?";
-            String threadsQuery = "SELECT id,title,owner_id,created_at FROM threads WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
-                PreparedStatement threadsPS = con.prepareStatement(threadsQuery);
-                threadsPS.setInt(1, id);
-                ResultSet threadsRS = threadsPS.executeQuery();
-                ArrayList<Thread> threads = new ArrayList<>();
-                while (threadsRS.next()){
-                    Thread thread = new Thread();
-                    thread.setId(threadsRS.getInt("id"));
-                    thread.setTitle(threadsRS.getString("title"));
-                    thread.setUserId(threadsRS.getInt("owner_id"));
-                    thread.setCreatedAt(threadsRS.getTimestamp("created_at"));
-                    threads.add(thread);
-                }
                 utilisateur.setId(rs.getInt("id"));
                 utilisateur.setUsername(rs.getString("username"));
                 utilisateur.setPassword(rs.getString("password"));
-                utilisateur.setThreads(threads);
+                utilisateur.setThreads(getThreads(id));
                 utilisateur.setCreatedAt(rs.getTimestamp("created_at"));
             }
         } catch (SQLException e){
@@ -42,7 +29,7 @@ public class UsersDAO implements DAO<User>{
         return utilisateur;
     }
 
-    public User findByUsername(String username) throws SQLException{
+    public User findByUsername(String username){
         User utilisateur = new User();
         try (Connection con = DS.instance.getConnection()){
             String query = "SELECT id,username,password,created_at FROM users WHERE username = ?";
@@ -61,7 +48,7 @@ public class UsersDAO implements DAO<User>{
         return utilisateur;
     }
 
-    public List<User> findAll() throws SQLException{
+    public List<User> findAll(){
         List<User> utilisateurs = new ArrayList<User>();
         try (Connection con = DS.instance.getConnection()){
             String query = "SELECT * FROM users";
@@ -77,7 +64,7 @@ public class UsersDAO implements DAO<User>{
         return utilisateurs;
     }
 
-    public void create(User joueur) throws SQLException{
+    public void create(User joueur) {
         try (Connection con = DS.instance.getConnection()){
             String query = "INSERT INTO users (username, password, created_at) VALUES (?, ?, ?)";
             PreparedStatement ps = con.prepareStatement(query);
@@ -90,7 +77,7 @@ public class UsersDAO implements DAO<User>{
         }
     }
 
-    public void delete(int id) throws SQLException{
+    public void delete(int id) {
         try (Connection con = DS.instance.getConnection()){
             String query = "DELETE FROM users WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(query);
@@ -101,7 +88,7 @@ public class UsersDAO implements DAO<User>{
         }
     }
 
-    public void save(User user) throws SQLException {
+    public void save(User user) {
         try (Connection con = DS.instance.getConnection()){
             String query = "UPDATE users SET username = ?, password = ? WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(query);
@@ -114,7 +101,7 @@ public class UsersDAO implements DAO<User>{
         }
     }
 
-    public boolean save(String username, String password) throws SQLException {
+    public boolean save(String username, String password) {
         try (Connection con = DS.instance.getConnection()){
             String query = "INSERT INTO users (username, password, created_at) VALUES (?, ?, ?)";
             PreparedStatement ps = con.prepareStatement(query);
@@ -126,6 +113,31 @@ public class UsersDAO implements DAO<User>{
         } catch (SQLException e){
             System.out.println(e.getMessage());
             return false;
+        }
+    }
+
+    public ArrayList<Thread> getThreads(int id){
+        ArrayList<Thread> threads = new ArrayList<>();
+        try (Connection con = DS.instance.getConnection()){
+            String query = "SELECT id,title,owner_id,created_at FROM threads WHERE owner_id = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            setThreads(threads, rs);
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return threads;
+    }
+
+    private void setThreads(ArrayList<Thread> threads, ResultSet rs) throws SQLException {
+        while(rs.next()){
+            Thread thread = new Thread();
+            thread.setId(rs.getInt("id"));
+            thread.setTitle(rs.getString("title"));
+            thread.setUserId(rs.getInt("owner_id"));
+            thread.setCreatedAt(rs.getTimestamp("created_at"));
+            threads.add(thread);
         }
     }
 }

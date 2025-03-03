@@ -46,10 +46,8 @@ public class Thread {
     public void setUserId(int userId) {
         this.userId = userId;
     }
-
+    
     public String getOwnerUsername() {return ownerUsername;}
-
-    public void setOwnerUsername(String ownerUsername) {this.ownerUsername = ownerUsername;}
 
     public Timestamp getCreatedAt() {
         return createdAt;

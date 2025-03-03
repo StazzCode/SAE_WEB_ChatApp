@@ -32,6 +32,7 @@ public class ThreadsDAO implements DAO<Thread>{
                 thread.setId(rs.getInt("id"));
                 thread.setTitle(rs.getString("title"));
                 thread.setUserId(rs.getInt("owner_id"));
+                thread.setOwnerUsername(new UsersDAO().findById(rs.getInt("owner_id")).getUsername());
                 thread.setPosts(posts);
                 thread.setCreatedAt(rs.getTimestamp("created_at"));
             }
@@ -41,8 +42,8 @@ public class ThreadsDAO implements DAO<Thread>{
         return thread;
     }
 
-    public List<Thread> findAll() {
-        List<Thread> threads = null;
+    public ArrayList<Thread> findAll() {
+        ArrayList<Thread> threads = null;
         try (Connection con = DS.instance.getConnection()) {
             threads = new ArrayList<Thread>();
             String query = "SELECT * FROM threads";
@@ -57,7 +58,7 @@ public class ThreadsDAO implements DAO<Thread>{
         return threads;
     }
 
-    public void create(Thread thread) throws SQLException{
+    public void create(Thread thread) {
         try (Connection con = DS.instance.getConnection()){
             String query = "INSERT INTO threads (title, owner_id, created_at) VALUES (?, ?, ?)";
             PreparedStatement ps = con.prepareStatement(query);
@@ -70,7 +71,7 @@ public class ThreadsDAO implements DAO<Thread>{
         }
     }
 
-    public void delete(int id) throws SQLException{
+    public void delete(int id) {
         try (Connection con = DS.instance.getConnection()){
             String query = "DELETE FROM threads WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(query);
@@ -82,7 +83,7 @@ public class ThreadsDAO implements DAO<Thread>{
         
     }
 
-    public void save(Thread e) throws SQLException {
+    public void save(Thread e) {
         try (Connection con = DS.instance.getConnection()){
             String query = "UPDATE threads SET title = ?, owner_id = ?, created_at = ? WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(query);

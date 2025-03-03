@@ -8,8 +8,7 @@ public class Subscription {
     private int threadId;
     private Timestamp createdAt;
 
-    public Subscription(int id, int userId, int threadId) {
-        this.id = id;
+    public Subscription(int userId, int threadId) {
         this.userId = userId;
         this.threadId = threadId;
     }

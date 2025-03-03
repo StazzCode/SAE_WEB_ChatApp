@@ -32,6 +32,7 @@ public class ThreadsDAO implements DAO<Thread>{
                 thread.setId(rs.getInt("id"));
                 thread.setTitle(rs.getString("title"));
                 thread.setUserId(rs.getInt("owner_id"));
+                thread.setOwnerUsername(new UsersDAO().findById(rs.getInt("owner_id")).getUsername());
                 thread.setPosts(posts);
                 thread.setCreatedAt(rs.getTimestamp("created_at"));
             }
@@ -41,8 +42,8 @@ public class ThreadsDAO implements DAO<Thread>{
         return thread;
     }
 
-    public List<Thread> findAll() {
-        List<Thread> threads = null;
+    public ArrayList<Thread> findAll() {
+        ArrayList<Thread> threads = null;
         try (Connection con = DS.instance.getConnection()) {
             threads = new ArrayList<Thread>();
             String query = "SELECT * FROM threads";

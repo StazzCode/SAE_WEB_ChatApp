@@ -34,9 +34,9 @@
         </a>
       </div>
       <div class="threads">
-        <div class="flex flex-row">
+        <div class="flex flex-row justify-between">
           <h4>Fils</h4>
-          <a>ThreadsSettings</a>
+          <a>Add</a>
         </div>
         <% if (threads != null){ for(Thread t : threads) { %>
           <div class="thread">
@@ -72,7 +72,7 @@
       <div class="postEntryContainer absolute w-3/4 bottom-0 p-8" <% if (selectedThread == null) {%> style="display: none" <%} %>>
         <div class="userEntry">
           <form action="${pageContext.request.contextPath}/homepage" method="post" class="flex justify-between [&>input]:px-6">
-            <input class="bg-gray-300 flex-1" type="text" id="message" placeholder="Message" required>
+            <input class="bg-gray-300 flex-1" type="text" name="message" placeholder="Message" required>
             <input type="submit" id="submit" value="Envoyer">
           </form>
         </div>
