@@ -1,6 +1,5 @@
 package controleur;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -26,12 +25,9 @@ public class HomePageController extends HttpServlet {
         UsersDAO usersDAO = new UsersDAO();
         ThreadsDAO threadsDAO = new ThreadsDAO();
         User user;
-        try {
-            user = usersDAO.findById(1);
-            req.getSession().setAttribute("user", user);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+
+        user = usersDAO.findById(1);
+        req.getSession().setAttribute("user", user);
 
         String selectedThreadParam = req.getParameter("selectedThread");
 
@@ -59,17 +55,25 @@ public class HomePageController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String message = req.getParameter("message");
+        String escapedMessage = message
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#x27;")
+                .replace("/", "&#x2F;");
 
         User user = (User) req.getSession().getAttribute("user");
 
         Thread selectedThread = (Thread) req.getSession().getAttribute("selectedThread");
 
-        Post post = new Post(user, selectedThread.getId(), message);
+        Post post = new Post(user, selectedThread.getId(), escapedMessage);
         PostDAO postDAO = new PostDAO();
         postDAO.create(post);
 
         PrintWriter out = resp.getWriter();
-        out.println("Post created successfully : " + post.getContent());
+        out.println(message);
+        out.println(escapedMessage);
         //resp.sendRedirect(req.getContextPath() + "/homepage?selectedThread=" + selectedThread.getId());
     }
 }

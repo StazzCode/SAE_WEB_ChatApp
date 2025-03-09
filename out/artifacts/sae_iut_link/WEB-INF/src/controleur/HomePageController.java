@@ -1,6 +1,5 @@
 package controleur;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -43,11 +42,7 @@ public class HomePageController extends HttpServlet {
 
         Thread selectedThread;
         int selectedThreadId = Integer.parseInt(req.getParameter("selectedThread"));
-        try {
-            selectedThread = threadsDAO.findById(selectedThreadId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        selectedThread = threadsDAO.findById(selectedThreadId);
         req.getSession().setAttribute("selectedThread", selectedThread);
         req.getRequestDispatcher("/WEB-INF/src/vue/homePage.jsp").forward(req, resp);
     }
@@ -56,12 +51,19 @@ public class HomePageController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String message = req.getParameter("message");
+        String escapedMessage = message
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#x27;")
+                .replace("/", "&#x2F;");
 
         User user = (User) req.getSession().getAttribute("user");
 
         Thread selectedThread = (Thread) req.getSession().getAttribute("selectedThread");
 
-        Post post = new Post(user, selectedThread.getId(), message);
+        Post post = new Post(user, selectedThread.getId(), escapedMessage);
         PostDAO postDAO = new PostDAO();
         postDAO.create(post);
 

@@ -23,18 +23,15 @@
   <a href="homepage">Back to HomePage</a>
   <div class="flex">
     <div class="ThreadsList">
-      <% if (threads != null) { for(Thread t : threads) { if (!t.getOwnerUsername().equals(user.getUsername())) {%>
+      <% if (threads != null) { for(Thread t : threads) { %>
         <div class="thread border-2 border-red-500 flex flex-row justify-between">
           <div class="title"><%=t.getTitle()%></div>
           <div class="author"><%=t.getOwnerUsername()%></div>
-          <form action="addThread?action=subscribe&threadId=<%= t.getId()%>" method="post" <% if (user.getThreads().stream().anyMatch(thread -> thread.getId() == t.getId())) { %> hidden="hidden" <% } %>>
-            <input type="submit" value="Subscribe">
-          </form>
-          <form action="addThread?action=unsubscribe&threadId=<%= t.getId()%>" method="post" <% if (user.getThreads().stream().noneMatch(thread -> thread.getId() == t.getId())) { %> hidden="hidden" <% } %>>
-            <input type="submit" value="Unsubscribe">
+          <form action="addThread?action=subscribe&threadId=<%= t.getId()%>" method="post">
+            <input type="submit" <% if (user.getThreads().stream().anyMatch(thread -> thread.getId() == t.getId())) { %> disabled <% } %> value="Subscribe">
           </form>
         </div>
-      <%}}}%>
+      <%}}%>
     </div>
     <div class="AddThread">
       <form action="addThread?action=add" method="post">

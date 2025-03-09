@@ -21,6 +21,12 @@ public class Thread {
         this.createdAt = createdAt;
     }
 
+    public Thread(String title, int id, String username) {
+        this.title = title;
+        this.userId = id;
+        this.ownerUsername = username;
+    }
+
     public Thread() {}
 
     public int getId() {
@@ -46,8 +52,10 @@ public class Thread {
     public void setUserId(int userId) {
         this.userId = userId;
     }
-    
+
     public String getOwnerUsername() {return ownerUsername;}
+
+    public void setOwnerUsername(String ownerUsername) {this.ownerUsername = ownerUsername;}
 
     public Timestamp getCreatedAt() {
         return createdAt;
@@ -60,4 +68,5 @@ public class Thread {
     public ArrayList<Post> getPosts() {return posts;}
 
     public void setPosts(ArrayList<Post> posts) {this.posts = posts;}
+
 }

@@ -18,8 +18,7 @@
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 </head>
 <%
-  //User user = (User) request.getSession().getAttribute("user");
-  User user = new UsersDAO().findById(1);
+  User user = (User) request.getSession().getAttribute("user");
   ArrayList<Thread> threads = user.getThreads();
   Thread selectedThread = (Thread) request.getSession().getAttribute("selectedThread");
 %>
@@ -51,7 +50,7 @@
       <% if (selectedThread != null) { %>
       <div class="postHeader">
         <h4><%=selectedThread.getTitle()%></h4>
-        <a>ThreadSettings</a>
+        <a <% if (selectedThread.getUserId() != user.getId()) { %> hidden="hidden" <% } %>>ThreadSettings</a>
       </div>
       <% } %>
       <div class="posts grid grid-cols-1" <% if (selectedThread == null) {%> style="display: none" <%} %>>

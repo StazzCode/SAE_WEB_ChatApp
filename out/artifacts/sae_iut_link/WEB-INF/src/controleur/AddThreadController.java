@@ -26,15 +26,17 @@ public class AddThreadController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ThreadsDAO threadsDAO = new ThreadsDAO();
+        SubscriptionsDAO subscriptionsDAO = new SubscriptionsDAO();
         User user = (User) req.getSession().getAttribute("user");
 
         String action = req.getParameter("action");
+
 
         if (action.equals("add")) {
             threadsDAO.create(new Thread(req.getParameter("title"), user.getId(), user.getUsername()));
             Thread thread = threadsDAO.findByTitle(req.getParameter("title"));
             Subscription subscription = new Subscription(user.getId(), thread.getId());
-            new SubscriptionsDAO().create(subscription);
+            subscriptionsDAO.create(subscription);
 
 
             req.getSession().setAttribute("selectedThread", thread);
@@ -42,8 +44,17 @@ public class AddThreadController extends HttpServlet {
         }
 
         if (action.equals("subscribe")){
-            new Subscription(user.getId(), Integer.parseInt(req.getParameter("threadId")));
+            Subscription subscription = new Subscription(user.getId(), Integer.parseInt(req.getParameter("threadId")));
+            subscriptionsDAO.create(subscription);
+
+            PrintWriter out = resp.getWriter();
+            out.println(subscription.getId() + subscription.getUserId() + subscription.getThreadId());
+            resp.sendRedirect(req.getContextPath() + "/addThread");
         }
 
+        if (action.equals("unsubscribe")){
+            subscriptionsDAO.delete(subscriptionsDAO.findByUserIdAndThreadId(user.getId(), Integer.parseInt(req.getParameter("threadId"))).getId());
+            resp.sendRedirect(req.getContextPath() + "/addThread");
+        }
     }
 }

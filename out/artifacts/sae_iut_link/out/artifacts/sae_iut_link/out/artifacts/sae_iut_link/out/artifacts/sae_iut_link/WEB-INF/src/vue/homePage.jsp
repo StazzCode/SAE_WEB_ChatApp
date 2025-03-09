@@ -1,7 +1,8 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="model.dto.User" %>
 <%@ page import="model.dto.Thread" %>
-<%@ page import="model.dto.Post" %><%--
+<%@ page import="model.dto.Post" %>
+<%@ page import="model.dao.UsersDAO" %><%--
   Created by IntelliJ IDEA.
   User: kellianmirey
   Date: 20/02/2025
@@ -12,7 +13,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="">
-    <title>HomePage</title>
+    <title>IUT Link</title>
     <!-- <meta http-equiv="refresh" content="5"> --> <!-- Rafraîchissement toutes les 5s -->
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 </head>
@@ -34,13 +35,13 @@
         </a>
       </div>
       <div class="threads">
-        <div class="flex flex-row">
-          <h4>Fils</h4>
-          <a>ThreadsSettings</a>
+        <div class="flex flex-row justify-between">
+          <h4 class="px-4">Fils</h4>
+          <a href="addThread" class="px-4">Add</a>
         </div>
         <% if (threads != null){ for(Thread t : threads) { %>
           <div class="thread">
-            <a href="${pageContext.request.contextPath}/homepage?selectedThread=<%= t.getId() %>"><%=t.getTitle()%></a>
+            <a href="homepage?selectedThread=<%= t.getId() %>"><%=t.getTitle()%></a>
           </div>
         <% }} %> <!-- Fin de la boucle -->
       </div>
@@ -49,7 +50,7 @@
       <% if (selectedThread != null) { %>
       <div class="postHeader">
         <h4><%=selectedThread.getTitle()%></h4>
-        <a>ThreadSettings</a>
+        <a <% if (selectedThread.getUserId() != user.getId()) { %> hidden="hidden" <% } %>>ThreadSettings</a>
       </div>
       <% } %>
       <div class="posts grid grid-cols-1" <% if (selectedThread == null) {%> style="display: none" <%} %>>
@@ -71,8 +72,8 @@
       </div>
       <div class="postEntryContainer absolute w-3/4 bottom-0 p-8" <% if (selectedThread == null) {%> style="display: none" <%} %>>
         <div class="userEntry">
-          <form action="${pageContext.request.contextPath}/homepage" method="post" class="flex justify-between [&>input]:px-6">
-            <input class="bg-gray-300 flex-1" type="text" id="message" placeholder="Message" required>
+          <form action="homepage" method="post" class="flex justify-between [&>input]:px-6">
+            <input class="bg-gray-300 flex-1" type="text" name="message" placeholder="Message" required>
             <input type="submit" id="submit" value="Envoyer">
           </form>
         </div>

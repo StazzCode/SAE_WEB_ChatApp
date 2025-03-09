@@ -14,10 +14,9 @@ import model.dto.Thread;
 import model.dto.User;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 
-@WebServlet("/homepage/*")
+@WebServlet("/homepage")
 public class HomePageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -26,12 +25,9 @@ public class HomePageController extends HttpServlet {
         UsersDAO usersDAO = new UsersDAO();
         ThreadsDAO threadsDAO = new ThreadsDAO();
         User user;
-        try {
-            user = usersDAO.findById(1);
-            req.getSession().setAttribute("user", user);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+
+        user = usersDAO.findById(1);
+        req.getSession().setAttribute("user", user);
 
         String selectedThreadParam = req.getParameter("selectedThread");
 
@@ -68,9 +64,6 @@ public class HomePageController extends HttpServlet {
         PostDAO postDAO = new PostDAO();
         postDAO.create(post);
 
-        PrintWriter out = resp.getWriter();
-        out.println("Post created successfully : " + post.getContent());
-        //resp.sendRedirect(req.getContextPath() + "/homepage?selectedThread=" + selectedThread.getId());
-        //resp.sendRedirect(req.getContextPath() + "/homepage?selectedThread=1");
+        resp.sendRedirect(req.getContextPath() + "/homepage?selectedThread=" + selectedThread.getId());
     }
 }

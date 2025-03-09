@@ -19,17 +19,25 @@
     User user = (User) request.getSession().getAttribute("user");
     ArrayList<Thread> threads = new ThreadsDAO().findAll();
   %>
+
+  <a href="homepage">Back to HomePage</a>
   <div class="flex">
     <div class="ThreadsList">
       <% if (threads != null) { for(Thread t : threads) { %>
-        <div class="thread">
+        <div class="thread border-2 border-red-500 flex flex-row justify-between">
           <div class="title"><%=t.getTitle()%></div>
-          <div class="author"><%=t.getUserId().getUsername()%></div>
+          <div class="author"><%=t.getOwnerUsername()%></div>
+          <form action="addThread?action=subscribe&threadId=<%= t.getId()%>" method="post" <% if (user.getThreads().stream().anyMatch(thread -> thread.getId() == t.getId())) { %> hidden="hidden" <% } %>>
+            <input type="submit" value="Subscribe">
+          </form>
+          <form action="addThread?action=unsubscribe&threadId=<%= t.getId()%>" method="post" <% if (user.getThreads().stream().noneMatch(thread -> thread.getId() == t.getId())) { %> hidden="hidden" <% } %>>
+            <input type="submit" value="Unsubscribe">
+          </form>
         </div>
       <%}}%>
     </div>
     <div class="AddThread">
-      <form action="addThread" method="post">
+      <form action="addThread?action=add" method="post">
         <input type="text" name="title" placeholder="Titre" required>
         <button type="submit">Ajouter</button>
       </form>

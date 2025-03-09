@@ -9,31 +9,19 @@ import model.dto.Thread;
 
 public class ThreadsDAO implements DAO<Thread>{
 
-    public Thread findById(int id) throws SQLException{
+    public Thread findById(int id){
         Thread thread = new Thread();
         try (Connection con = DS.instance.getConnection()){
             String query = "SELECT * FROM threads WHERE id = ?";
-            String postsQuery = "SELECT id,author_id,thread_id,content,created_at FROM posts WHERE thread_id = ?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
-                PreparedStatement postsPS = con.prepareStatement(postsQuery);
-                postsPS.setInt(1, id);
-                ResultSet postsRS = postsPS.executeQuery();
-                ArrayList<Post> posts = new ArrayList<>();
-                while (postsRS.next()){
-                    Post post = new Post();
-                    post.setAuthor(new UsersDAO().findById(postsRS.getInt("author_id")));
-                    post.setThreadId(postsRS.getInt("thread_id"));
-                    post.setContent(postsRS.getString("content"));
-                    posts.add(post);
-                }
                 thread.setId(rs.getInt("id"));
                 thread.setTitle(rs.getString("title"));
                 thread.setUserId(rs.getInt("owner_id"));
                 thread.setOwnerUsername(new UsersDAO().findById(rs.getInt("owner_id")).getUsername());
-                thread.setPosts(posts);
+                thread.setPosts(getPosts(id));
                 thread.setCreatedAt(rs.getTimestamp("created_at"));
             }
         } catch (SQLException e ){
@@ -46,27 +34,15 @@ public class ThreadsDAO implements DAO<Thread>{
         Thread thread = new Thread();
         try (Connection con = DS.instance.getConnection()){
             String query = "SELECT * FROM threads WHERE title = ?";
-            String postsQuery = "SELECT id,author_id,thread_id,content,created_at FROM posts WHERE thread_id = ?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, title);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
-                PreparedStatement postsPS = con.prepareStatement(postsQuery);
-                postsPS.setInt(1, rs.getInt("id"));
-                ResultSet postsRS = postsPS.executeQuery();
-                ArrayList<Post> posts = new ArrayList<>();
-                while (postsRS.next()){
-                    Post post = new Post();
-                    post.setAuthor(new UsersDAO().findById(postsRS.getInt("author_id")));
-                    post.setThreadId(postsRS.getInt("thread_id"));
-                    post.setContent(postsRS.getString("content"));
-                    posts.add(post);
-                }
                 thread.setId(rs.getInt("id"));
                 thread.setTitle(rs.getString("title"));
                 thread.setUserId(rs.getInt("owner_id"));
                 thread.setOwnerUsername(new UsersDAO().findById(rs.getInt("owner_id")).getUsername());
-                thread.setPosts(posts);
+                thread.setPosts(getPosts(rs.getInt("id")));
                 thread.setCreatedAt(rs.getTimestamp("created_at"));
             }
         } catch (SQLException e ){
@@ -127,5 +103,33 @@ public class ThreadsDAO implements DAO<Thread>{
         } catch (SQLException ex){
             System.out.println(ex.getMessage());
         }
+    }
+
+    public ArrayList<Post> getPosts(int id){
+        ArrayList<Post> posts = null;
+        try (Connection con = DS.instance.getConnection()){
+            posts = new ArrayList<Post>();
+            String query = "SELECT * FROM posts WHERE thread_id = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            setPosts(posts, rs);
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return posts;
+    }
+
+    public void setPosts(ArrayList<Post> posts, ResultSet rs) throws SQLException {
+        while (rs.next()){
+            Post post = new Post();
+            post.setId(rs.getInt("id"));
+            post.setAuthor(new UsersDAO().findById(rs.getInt("author_id")));
+            post.setThreadId(rs.getInt("thread_id"));
+            post.setContent(rs.getString("content"));
+            post.setCreatedAt(rs.getTimestamp("created_at"));
+            posts.add(post);
+        }
+
     }
 }

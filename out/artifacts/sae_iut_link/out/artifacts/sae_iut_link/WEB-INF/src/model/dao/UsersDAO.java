@@ -119,7 +119,8 @@ public class UsersDAO implements DAO<User>{
     public ArrayList<Thread> getThreads(int id){
         ArrayList<Thread> threads = new ArrayList<>();
         try (Connection con = DS.instance.getConnection()){
-            String query = "SELECT id,title,owner_id,created_at FROM threads WHERE owner_id = ?";
+            //String query = "SELECT id,title,owner_id,created_at FROM threads WHERE owner_id = ?";
+            String query = "SELECT t.id,t.title,t.owner_id,t.created_at FROM threads as t,subscriptions as s WHERE t.id = s.thread_id AND s.user_id = ?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
