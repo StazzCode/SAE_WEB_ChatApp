@@ -11,6 +11,7 @@ import model.dao.UsersDAO;
 import model.dto.Subscription;
 import model.dto.Thread;
 import model.dto.User;
+import model.utils.UserUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,6 +21,9 @@ import java.util.Objects;
 public class AddThreadController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int userId = (int) req.getSession().getAttribute("userId");
+        User user = UserUtils.getUpdatedUser(userId);
+        req.getSession().setAttribute("user", user);
         req.getRequestDispatcher("/WEB-INF/src/vue/addThread.jsp").forward(req, resp);
     }
 
@@ -27,8 +31,8 @@ public class AddThreadController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ThreadsDAO threadsDAO = new ThreadsDAO();
         SubscriptionsDAO subscriptionsDAO = new SubscriptionsDAO();
-        User user = (User) req.getSession().getAttribute("user");
 
+        User user = (User) req.getSession().getAttribute("user");
         String action = req.getParameter("action");
 
 

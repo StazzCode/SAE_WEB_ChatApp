@@ -27,10 +27,14 @@
         <div class="thread border-2 border-red-500 flex flex-row justify-between">
           <div class="title"><%=t.getTitle()%></div>
           <div class="author"><%=t.getOwnerUsername()%></div>
-          <form action="addThread?action=subscribe&threadId=<%= t.getId()%>" method="post" <% if (user.getThreads().stream().anyMatch(thread -> thread.getId() == t.getId())) { %> hidden="hidden" <% } %>>
+          <form action="addThread" method="post" <% if (user.getThreads().stream().anyMatch(thread -> thread.getId() == t.getId())) { %> hidden="hidden" <% } %>>
+            <input type="hidden" name="action" value="subscribe">
+            <input type="hidden" name="threadId" value="<%= t.getId()%>">
             <input type="submit" value="Subscribe">
           </form>
-          <form action="addThread?action=unsubscribe&threadId=<%= t.getId()%>" method="post" <% if (user.getThreads().stream().noneMatch(thread -> thread.getId() == t.getId())) { %> hidden="hidden" <% } %>>
+          <form action="addThread" method="post" <% if (user.getThreads().stream().noneMatch(thread -> thread.getId() == t.getId())) { %> hidden="hidden" <% } %>>
+            <input type="hidden" name="action" value="unsubscribe">
+            <input type="hidden" name="threadId" value="<%= t.getId()%>">
             <input type="submit" value="Unsubscribe">
           </form>
         </div>

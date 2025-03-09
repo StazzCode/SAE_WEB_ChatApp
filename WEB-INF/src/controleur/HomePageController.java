@@ -11,6 +11,7 @@ import model.dao.UsersDAO;
 import model.dto.Post;
 import model.dto.Thread;
 import model.dto.User;
+import model.utils.UserUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,11 +23,12 @@ public class HomePageController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html;charset=UTF-8");
 
-        UsersDAO usersDAO = new UsersDAO();
         ThreadsDAO threadsDAO = new ThreadsDAO();
         User user;
 
-        user = usersDAO.findById(1);
+        int userId = 1;
+        user = UserUtils.getUpdatedUser(userId);
+        req.getSession().setAttribute("userId", userId);
         req.getSession().setAttribute("user", user);
 
         String selectedThreadParam = req.getParameter("selectedThread");

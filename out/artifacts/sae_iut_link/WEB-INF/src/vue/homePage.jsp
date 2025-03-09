@@ -50,7 +50,7 @@
       <% if (selectedThread != null) { %>
       <div class="postHeader">
         <h4><%=selectedThread.getTitle()%></h4>
-        <a <% if (selectedThread.getUserId() != user.getId()) { %> hidden="hidden" <% } %>>ThreadSettings</a>
+        <a href="threadSettings" <% if (selectedThread.getUserId() != user.getId()) { %> hidden="hidden" <% } %>>ThreadSettings</a>
       </div>
       <% } %>
       <div class="posts grid grid-cols-1" <% if (selectedThread == null) {%> style="display: none" <%} %>>
