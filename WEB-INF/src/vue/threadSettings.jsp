@@ -12,6 +12,8 @@
 <html>
 <head>
     <title>IUT Link</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/shadcn-ui@0.9.5/+esm"></script>
 </head>
 
 <%

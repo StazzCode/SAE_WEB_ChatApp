@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.dao.SubscriptionsDAO;
 import model.dao.ThreadsDAO;
-import model.dao.UsersDAO;
 import model.dto.Subscription;
 import model.dto.Thread;
 import model.dto.User;
@@ -15,7 +14,6 @@ import model.utils.UserUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Objects;
 
 @WebServlet("/addThread")
 public class AddThreadController extends HttpServlet {

@@ -14,8 +14,6 @@ import model.dto.User;
 import model.utils.UserUtils;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.SQLException;
 
 @WebServlet("/homepage")
 public class HomePageController extends HttpServlet {

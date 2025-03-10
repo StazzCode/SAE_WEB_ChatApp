@@ -1,6 +1,5 @@
 package controleur;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,9 +11,9 @@ import model.dao.UsersDAO;
 import model.dto.Post;
 import model.dto.Thread;
 import model.dto.User;
+import model.utils.UserUtils;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 @WebServlet("/homepage")
 public class HomePageController extends HttpServlet {
@@ -22,11 +21,12 @@ public class HomePageController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html;charset=UTF-8");
 
-        UsersDAO usersDAO = new UsersDAO();
         ThreadsDAO threadsDAO = new ThreadsDAO();
         User user;
 
-        user = usersDAO.findById(1);
+        int userId = 1;
+        user = UserUtils.getUpdatedUser(userId);
+        req.getSession().setAttribute("userId", userId);
         req.getSession().setAttribute("user", user);
 
         String selectedThreadParam = req.getParameter("selectedThread");
@@ -42,11 +42,7 @@ public class HomePageController extends HttpServlet {
 
         Thread selectedThread;
         int selectedThreadId = Integer.parseInt(req.getParameter("selectedThread"));
-        try {
-            selectedThread = threadsDAO.findById(selectedThreadId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        selectedThread = threadsDAO.findById(selectedThreadId);
         req.getSession().setAttribute("selectedThread", selectedThread);
         req.getRequestDispatcher("/WEB-INF/src/vue/homePage.jsp").forward(req, resp);
     }
@@ -55,12 +51,19 @@ public class HomePageController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String message = req.getParameter("message");
+        String escapedMessage = message
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#x27;")
+                .replace("/", "&#x2F;");
 
         User user = (User) req.getSession().getAttribute("user");
 
         Thread selectedThread = (Thread) req.getSession().getAttribute("selectedThread");
 
-        Post post = new Post(user, selectedThread.getId(), message);
+        Post post = new Post(user, selectedThread.getId(), escapedMessage);
         PostDAO postDAO = new PostDAO();
         postDAO.create(post);
 
