@@ -16,9 +16,11 @@ public class PostDAO implements DAO<Post>{
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 Post post = new Post();
+                post.setId(rs.getInt("id"));
                 post.setAuthor(new UsersDAO().findById(rs.getInt("author_id")));
                 post.setThreadId(rs.getInt("thread_id"));
                 post.setContent(rs.getString("content"));
+                post.setCreatedAt(rs.getTimestamp("created_at"));
                 return post;
             }
         } catch (SQLException e ){
@@ -27,7 +29,7 @@ public class PostDAO implements DAO<Post>{
         return null;
     }
 
-    public List<Post> findAll() throws SQLException{
+    public List<Post> findAll() {
         List<Post> Posts = new ArrayList<Post>();
         try (Connection con = DS.instance.getConnection()){
             String query = "SELECT * FROM Posts";
@@ -42,7 +44,20 @@ public class PostDAO implements DAO<Post>{
         return Posts;
     }
 
-    public void delete(int id) throws SQLException{
+    public void create(Post post) {
+        try (Connection con = DS.instance.getConnection()){
+            String query = "INSERT INTO Posts (content, author_id, thread_id) VALUES (?, ?, ?)";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, post.getContent());
+            ps.setInt(2, post.getAuthor().getId());
+            ps.setInt(3, post.getThreadId());
+            ps.executeUpdate();
+        } catch (SQLException e ){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void delete(int id) {
         try (Connection con = DS.instance.getConnection()){
             String query = "DELETE FROM Posts WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(query);
@@ -55,11 +70,12 @@ public class PostDAO implements DAO<Post>{
 
     public void save(Post post) {
         try (Connection con = DS.instance.getConnection()){
-            String query = "UPDATE Posts SET content = ?, author_id = ?, thread_id = ?, created_at = ? WHERE id = ?";
+            String query = "UPDATE Posts SET content = ?, author_id = ?, thread_id = ? WHERE id = ?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, post.getContent());
             ps.setInt(2, post.getAuthor().getId());
             ps.setInt(3, post.getThreadId());
+            ps.setInt(4, post.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

@@ -51,7 +51,7 @@ public class UsersDAO implements DAO<User>{
     public ArrayList<User> findAllFromSubscription(int subscriptionId){
         ArrayList <User> utilisateurs = new ArrayList<>();
         try (Connection con = DS.instance.getConnection()){
-            String query = "Select u.id,username,password,u.created_at from users as u, subscriptions as s WHERE u.id = s.user_id AND s.thread_id = ?";
+            String query = "SELECT u.id, username, password, u.created_at FROM users u JOIN subscriptions s ON u.id = s.user_id WHERE s.thread_id = ?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setInt(1, subscriptionId);
             ResultSet rs = ps.executeQuery();

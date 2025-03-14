@@ -1,6 +1,5 @@
 package controleur;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,62 +11,86 @@ import model.dao.UsersDAO;
 import model.dto.Post;
 import model.dto.Thread;
 import model.dto.User;
+import model.utils.UserUtils;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
-@WebServlet("/homepage/*")
+@WebServlet("/homepage")
 public class HomePageController extends HttpServlet {
+    private ThreadsDAO threadsDAO;
+    private UsersDAO usersDAO;
+    private PostDAO postDAO;
+
+    @Override
+    public void init() throws ServletException {
+        threadsDAO = new ThreadsDAO();
+        usersDAO = new UsersDAO();
+        postDAO = new PostDAO();
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html;charset=UTF-8");
 
-        UsersDAO usersDAO = new UsersDAO();
-        ThreadsDAO threadsDAO = new ThreadsDAO();
-        User user;
-        try {
-            user = usersDAO.findById(1);
-            req.getSession().setAttribute("user", user);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        int userId = 1;
+        User user = UserUtils.getUpdatedUser(userId);
+        req.getSession().setAttribute("userId", userId);
+        req.getSession().setAttribute("user", user);
 
         String selectedThreadParam = req.getParameter("selectedThread");
 
-        if (selectedThreadParam == null){
+        if (selectedThreadParam == null) {
             req.getSession().setAttribute("selectedThread", null);
             req.getRequestDispatcher("/WEB-INF/src/vue/homePage.jsp").forward(req, resp);
+            return;
         }
 
-        if (selectedThreadParam != null && selectedThreadParam.isEmpty()){
+        if (selectedThreadParam.isEmpty()) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Thread ID cannot be empty");
+            return;
         }
 
-        Thread selectedThread;
-        int selectedThreadId = Integer.parseInt(req.getParameter("selectedThread"));
         try {
-            selectedThread = threadsDAO.findById(selectedThreadId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            int selectedThreadId = Integer.parseInt(selectedThreadParam);
+            Thread selectedThread = threadsDAO.findById(selectedThreadId);
+            req.getSession().setAttribute("selectedThread", selectedThread);
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid Thread ID format");
+            return;
         }
-        req.getSession().setAttribute("selectedThread", selectedThread);
+
         req.getRequestDispatcher("/WEB-INF/src/vue/homePage.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         String message = req.getParameter("message");
+        String escapedMessage = escapeHtml(message);
 
         User user = (User) req.getSession().getAttribute("user");
-
         Thread selectedThread = (Thread) req.getSession().getAttribute("selectedThread");
 
-        Post post = new Post(user, selectedThread.getId(), message);
-        PostDAO postDAO = new PostDAO();
+        if (user == null || selectedThread == null) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "User or Thread not found in session");
+            return;
+        }
+
+        Post post = new Post(user, selectedThread.getId(), escapedMessage);
         postDAO.create(post);
 
         resp.sendRedirect(req.getContextPath() + "/homepage?selectedThread=" + selectedThread.getId());
-        //resp.sendRedirect(req.getContextPath() + "/homepage?selectedThread=1");
+    }
+
+    private String escapeHtml(String message) {
+        if (message == null) {
+            return null;
+        }
+        return message
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#x27;")
+                .replace("/", "&#x2F;");
     }
 }

@@ -13,6 +13,8 @@
 <html>
 <head>
     <title>IUT Link</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/shadcn-ui@0.9.5/+esm"></script>
 </head>
 <body>
   <%
@@ -23,18 +25,22 @@
   <a href="homepage">Back to HomePage</a>
   <div class="flex">
     <div class="ThreadsList">
-      <% if (threads != null) { for(Thread t : threads) { %>
+      <% if (threads != null) { for(Thread t : threads) { if (!t.getOwnerUsername().equals(user.getUsername())) {%>
         <div class="thread border-2 border-red-500 flex flex-row justify-between">
           <div class="title"><%=t.getTitle()%></div>
           <div class="author"><%=t.getOwnerUsername()%></div>
-          <form action="addThread?action=subscribe&threadId=<%= t.getId()%>" method="post" <% if (user.getThreads().stream().anyMatch(thread -> thread.getId() == t.getId())) { %> hidden="hidden" <% } %>>
+          <form action="addThread" method="post" <% if (user.getThreads().stream().anyMatch(thread -> thread.getId() == t.getId())) { %> hidden="hidden" <% } %>>
+            <input type="hidden" name="action" value="subscribe">
+            <input type="hidden" name="threadId" value="<%= t.getId()%>">
             <input type="submit" value="Subscribe">
           </form>
-          <form action="addThread?action=unsubscribe&threadId=<%= t.getId()%>" method="post" <% if (user.getThreads().stream().noneMatch(thread -> thread.getId() == t.getId())) { %> hidden="hidden" <% } %>>
+          <form action="addThread" method="post" <% if (user.getThreads().stream().noneMatch(thread -> thread.getId() == t.getId())) { %> hidden="hidden" <% } %>>
+            <input type="hidden" name="action" value="unsubscribe">
+            <input type="hidden" name="threadId" value="<%= t.getId()%>">
             <input type="submit" value="Unsubscribe">
           </form>
         </div>
-      <%}}%>
+      <%}}}%>
     </div>
     <div class="AddThread">
       <form action="addThread?action=add" method="post">

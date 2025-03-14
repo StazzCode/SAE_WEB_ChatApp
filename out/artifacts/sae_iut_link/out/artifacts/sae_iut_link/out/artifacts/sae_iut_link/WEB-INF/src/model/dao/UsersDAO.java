@@ -48,6 +48,27 @@ public class UsersDAO implements DAO<User>{
         return utilisateur;
     }
 
+    public ArrayList<User> findAllFromSubscription(int subscriptionId){
+        ArrayList <User> utilisateurs = new ArrayList<>();
+        try (Connection con = DS.instance.getConnection()){
+            String query = "SELECT u.id, username, password, u.created_at FROM users u JOIN subscriptions s ON u.id = s.user_id WHERE s.thread_id = ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, subscriptionId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                user.setCreatedAt(rs.getTimestamp("created_at"));
+                utilisateurs.add(user);
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return utilisateurs;
+    }
+
     public List<User> findAll(){
         List<User> utilisateurs = new ArrayList<User>();
         try (Connection con = DS.instance.getConnection()){
