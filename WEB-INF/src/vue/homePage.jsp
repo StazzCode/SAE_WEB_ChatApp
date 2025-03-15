@@ -17,10 +17,8 @@
     <link rel="stylesheet" href="">
     <title>IUT Link</title>
     <!-- <meta http-equiv="refresh" content="5"> --> <!-- Rafraîchissement toutes les 5s -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="css/global.css">
-</head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0" rel="stylesheet" type="text/css" />
 <%
   User user = (User) request.getSession().getAttribute("user");
   ArrayList<Thread> threads = user.getThreads();
@@ -96,8 +94,8 @@
                       <time class="text-xs opacity-50"><%=new SimpleDateFormat("HH:mm").format(p.getCreatedAt())%></time>
                     </div>
                   <% } %>
-                  <div class="chat-bubble font-normal text-clip break-words p-2 rounded-lg <% if (p.getAuthor().getId() == user.getId()) { %> bg-linear-to-tr from-blue-200 from-10% via-blue-300 via-70 to-blue-400 to-100% before:bg-transparent<% }  else { %> bg-gray-300 <% } %>">
-                    <p><%= p.getContent() %></p>
+                  <div class="chat-bubble font-normal text-clip break-words p-2 rounded-lg <% if (p.getAuthor().getId() == user.getId()) { %> bg-linear-to-tr from-blue-200 from-10% via-blue-300 via-70 to-blue-400 to-100% before:bg-transparent <% }  else { %> bg-gray-300 <% } %>">
+                    <p><%= ((User) p.getAuthor()).getUsername() %></p>
                   </div>
                     <% previousAuthor = p.getAuthor(); %>
                 </div>
