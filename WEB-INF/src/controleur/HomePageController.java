@@ -32,8 +32,11 @@ public class HomePageController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html;charset=UTF-8");
 
-        int userId = 1;
-        User user = UserUtils.getUpdatedUser(userId);
+        ThreadsDAO threadsDAO = new ThreadsDAO();
+        User user;
+
+        int userId =  ((User) req.getSession().getAttribute("user")).getId();
+        user = UserUtils.getUpdatedUser(userId);
         req.getSession().setAttribute("userId", userId);
         req.getSession().setAttribute("user", user);
 
