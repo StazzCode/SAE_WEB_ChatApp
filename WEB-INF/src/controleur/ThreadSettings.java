@@ -17,10 +17,16 @@ public class ThreadSettings extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user;
-        int userId = 1;
-        user = UserUtils.getUpdatedUser(userId);
-        req.getSession().setAttribute("userId", userId);
-        req.getSession().setAttribute("user", user);
+        int userId = 0;
+
+        if (req.getSession().getAttribute("user") == null) {
+            req.getRequestDispatcher("/WEB-INF/src/vue/login.jsp").forward(req, resp);
+        } else {
+            userId = ((User) req.getSession().getAttribute("user")).getId();
+            user = UserUtils.getUpdatedUser(userId);
+            req.getSession().setAttribute("userId", userId);
+            req.getSession().setAttribute("user", user);
+        }
         req.getRequestDispatcher("/WEB-INF/src/vue/threadSettings.jsp").forward(req, resp);
     }
 

@@ -19,9 +19,17 @@ import java.io.PrintWriter;
 public class AddThreadController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int userId = (int) req.getSession().getAttribute("userId");
-        User user = UserUtils.getUpdatedUser(userId);
-        req.getSession().setAttribute("user", user);
+        User user;
+        int userId = 0;
+
+        if (req.getSession().getAttribute("user") == null) {
+            req.getRequestDispatcher("/WEB-INF/src/vue/login.jsp").forward(req, resp);
+        } else {
+            userId = ((User) req.getSession().getAttribute("user")).getId();
+            user = UserUtils.getUpdatedUser(userId);
+            req.getSession().setAttribute("userId", userId);
+            req.getSession().setAttribute("user", user);
+        }
         req.getRequestDispatcher("/WEB-INF/src/vue/addThread.jsp").forward(req, resp);
     }
 

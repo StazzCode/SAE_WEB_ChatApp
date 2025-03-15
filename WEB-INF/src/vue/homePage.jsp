@@ -35,15 +35,15 @@
       <a class="mr-8 text-lg font-semibold">
         <%= (user.getUsername() == null ? "LoginPlaceHolder" : user.getUsername()) %>
       </a>
-      <a>
-        <div class="max-w-7 max-h-7">
-          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-            <polyline points="16 17 21 12 16 7"></polyline>
-            <line x1="21" x2="9" y1="12" y2="12"></line>
-          </svg>
-        </div>
-      </a>
+      <form class="disconnect relative max-w-7 max-h-7 w-7 h-7" action="homepage" method="post">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out absolute">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" x2="9" y1="12" y2="12"></line>
+        </svg>
+        <input type="hidden" name="disconnect" value="true">
+        <input class="absolute w-full h-full" type="submit" value="">
+      </form>
     </div>
     <hr>
     <div class="threads p-4">

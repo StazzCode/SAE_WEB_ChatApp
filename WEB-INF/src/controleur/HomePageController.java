@@ -34,11 +34,16 @@ public class HomePageController extends HttpServlet {
 
         ThreadsDAO threadsDAO = new ThreadsDAO();
         User user;
+        int userId = 0;
 
-        int userId =  ((User) req.getSession().getAttribute("user")).getId();
-        user = UserUtils.getUpdatedUser(userId);
-        req.getSession().setAttribute("userId", userId);
-        req.getSession().setAttribute("user", user);
+        if (req.getSession().getAttribute("user") == null) {
+            req.getRequestDispatcher("/WEB-INF/src/vue/login.jsp").forward(req, resp);
+        } else {
+            userId = ((User) req.getSession().getAttribute("user")).getId();
+            user = UserUtils.getUpdatedUser(userId);
+            req.getSession().setAttribute("userId", userId);
+            req.getSession().setAttribute("user", user);
+        }
 
         String selectedThreadParam = req.getParameter("selectedThread");
 
@@ -72,6 +77,13 @@ public class HomePageController extends HttpServlet {
 
         User user = (User) req.getSession().getAttribute("user");
         Thread selectedThread = (Thread) req.getSession().getAttribute("selectedThread");
+        String isDisconnecting = req.getParameter("disconnect");
+
+        if (isDisconnecting != null && isDisconnecting.equals("true")) {
+            req.getSession().invalidate();
+            resp.sendRedirect(req.getContextPath() + "/Authent?action=login");
+            return;
+        }
 
         if (user == null || selectedThread == null) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "User or Thread not found in session");
