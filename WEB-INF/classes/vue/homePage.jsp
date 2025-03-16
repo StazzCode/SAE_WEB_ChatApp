@@ -30,36 +30,46 @@
 %>
 <body>
 <div class="flex flex-row w-screen h-screen max-h-screen text-lg">
-  <div class="sideBar flex flex-1 flex-col bg-white">
-    <div class="control flex flex-row items-center px-4 py-2">
-      <a class="mr-8 text-lg font-semibold">
+  <div class="sideBar flex flex-1 flex-col max-w-sm w-sm h-full bg-white">
+    <div class="control flex flex-row justify-around items-center m-4">
+      <a class="w-3xs text-xl font-semibold truncate">
         <%= (user.getUsername() == null ? "LoginPlaceHolder" : user.getUsername()) %>
       </a>
-      <form class="disconnect relative max-w-7 max-h-7 w-7 h-7" action="homepage" method="post">
-        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out absolute">
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-          <polyline points="16 17 21 12 16 7"></polyline>
-          <line x1="21" x2="9" y1="12" y2="12"></line>
-        </svg>
-        <input type="hidden" name="disconnect" value="true">
-        <input class="absolute w-full h-full" type="submit" value="">
-      </form>
+      <div class="tooltip tooltip-right" data-tooltip="Disconnect">
+        <form class="disconnect relative max-w-7 max-h-7 w-7 h-7" action="homepage" method="post">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out absolute">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" x2="9" y1="12" y2="12"></line>
+          </svg>
+          <input type="hidden" name="disconnect" value="true">
+          <input class="absolute w-full h-full" type="submit" value="">
+        </form>
+      </div>
     </div>
     <hr>
-    <div class="threads p-4">
-      <div class="flex flex-row justify-between">
-        <h4 class="">Fils</h4>
-        <a href="addThread" class="px-4 max-w-10 max-h-10">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <div class="threads flex flex-col flex-1 p-4 m-4 rounded-[16px] bg-gray-200 overflow-hidden">
+      <div class="flex flex-row justify-between mb-2">
+        <span class="flex flex-row items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash">
+            <line x1="4" x2="20" y1="9" y2="9"></line>
+            <line x1="4" x2="20" y1="15" y2="15"></line>
+            <line x1="10" x2="8" y1="3" y2="21"></line>
+            <line x1="16" x2="14" y1="3" y2="21"></line>
+          </svg>
+          <a class="text-xl">Threads</a>
+        </span>
+        <a href="addThread" class="flex justify-center items-center size-8 rounded-full bg-gray-100">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
           </svg>
-
         </a>
       </div>
-      <div class="threadContainer my-4 w-1/2">
+      <hr>
+      <div class="threadContainer flex-1 my-4 overflow-auto">
         <% if (threads != null){ for(Thread t : threads) { %>
-        <div class="thread flex felx-row justify-between">
-          <a href="homepage?selectedThread=<%= t.getId() %>"><%=t.getTitle()%></a>
+        <div class="thread flex flex-row justify-between">
+          <a class="truncate flex-1" href="homepage?selectedThread=<%= t.getId() %>"><%=t.getTitle()%></a>
 
           <a href="threadSettings?selectedThread=<%= t.getId() %>" <% if (t.getUserId() != user.getId()) { %> hidden <% } %>>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings">
@@ -108,15 +118,14 @@
       <% } %>
 
       </div>
-      <hr>
-      <div class="postEntryContainer p-8 bg-transparent " <% if (selectedThread == null) {%> style="display: none" <%} %>>
+      <div class="postEntryContainer pb-6 pt-3 bg-transparent " <% if (selectedThread == null) {%> style="display: none" <%} %>>
         <div class="userEntry bg-transparent px-6">
-          <form action="homepage" method="post" class="flex justify-between [&>input]:px-6">
-            <input class="input input-md bg-gray-300 flex-1 items-center" type="text" name="message" placeholder="Message" required>
-            <div class="btn btn-md ml-6 text-white rounded-full shadow-md shadow-blue-600/25 bg-blue-500 border-2 border-blue-400/25 hover:bg-blue-600 hover:shadow-blue-700/50 hover:border-blue-500/25 hover:shadow-lg transition delay-50 duration-300 ease-in-out hover:scale-110">
+          <form action="homepage" method="post" class="flex justify-between [&>input]:px-6 bg-gray-300 border-2 border-gray-200/50 p-1 rounded-full">
+            <input class="flex-1 items-center border-0 outline-none" type="text" name="message" placeholder="Send message" required>
+            <div class="btn btn-md ml-6 text-white rounded-full shadow-md shadow-blue-600/25 bg-blue-500 border-2 border-blue-400/25 hover:bg-blue-600 hover:shadow-blue-700/50 hover:border-blue-500/25 hover:shadow-lg transition delay-50 duration-300 ease-in-out">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send">
                 <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path><path d="m21.854 2.147-10.94 10.939"></path></svg>
-              <input class="" type="submit" id="submit" value="Envoyer">
+              <input class="" type="submit" id="submit" value="Send">
             </div>
           </form>
         </div>
