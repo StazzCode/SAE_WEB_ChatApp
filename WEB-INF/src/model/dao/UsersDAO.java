@@ -124,7 +124,7 @@ public class UsersDAO implements DAO<User>{
 
     public boolean save(String username, String password) {
         try (Connection con = DS.instance.getConnection()){
-            String query = "INSERT INTO users (username, password, created_at) VALUES (?, ?, ?)";
+            String query = "INSERT INTO users (username, password, created_at) VALUES (?, MD5(?), ?)";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, username);
             ps.setString(2, password);

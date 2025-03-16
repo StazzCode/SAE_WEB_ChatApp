@@ -1,6 +1,9 @@
 package controleur;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.dao.UsersDAO;
 import model.dto.User;
+import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.Digest;
 
 @WebServlet("/Authent")
 public class Authent extends HttpServlet {
@@ -45,7 +49,8 @@ public class Authent extends HttpServlet {
             switch (action) {
                 case "login":
                     User utilisateur = usersDAO.findByUsername(userName);
-                    if (utilisateur == null || !utilisateur.getPassword().equals(password)) {
+
+                    if (utilisateur == null || !utilisateur.getPassword().equals(encryptPassword(password))) {
                         vue = "WEB-INF/src/vue/login.jsp";
                     } else {
                         session.setAttribute("user", utilisateur);
@@ -70,5 +75,16 @@ public class Authent extends HttpServlet {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private String encryptPassword(String password) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(password.getBytes());
+        byte[] digest = md.digest();
+        StringBuilder sb = new StringBuilder();
+        for (byte b : digest) {
+            sb.append(String.format("%02x", b & 0xff));
+        }
+        return sb.toString();
     }
 }

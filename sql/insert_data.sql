@@ -1,7 +1,7 @@
 INSERT INTO users (username, password) VALUES
-('utilisateur1', 'motdepasse1'),
-('utilisateur2', 'motdepasse2'),
-('utilisateur3', 'motdepasse3');
+('utilisateur1', MD5('motdepasse1')),
+('utilisateur2', MD5('motdepasse2')),
+('utilisateur3', MD5('motdepasse3'));
 
 INSERT INTO threads (title, owner_id) VALUES
 ('Discussion 1', 1),
