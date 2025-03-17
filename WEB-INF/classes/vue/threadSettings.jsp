@@ -1,7 +1,8 @@
 <%@ page import="model.dao.UsersDAO" %>
 <%@ page import="model.dto.Thread" %>
 <%@ page import="model.dto.User" %>
-<%@ page import="java.util.ArrayList" %><%--
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="model.dao.ThreadsDAO" %><%--
   Created by IntelliJ IDEA.
   User: kellianmirey
   Date: 09/03/2025
@@ -19,7 +20,7 @@
 <%
     User user = (User) request.getSession().getAttribute("user");
     UsersDAO usersDAO = new UsersDAO();
-    Thread selectedThread = (Thread) request.getSession().getAttribute("selectedThread");
+    Thread selectedThread = new ThreadsDAO().findById(Integer.parseInt(request.getParameter("selectedThread")));
     ArrayList<User> subscribers = usersDAO.findAllFromSubscription(selectedThread.getId());
 %>
 

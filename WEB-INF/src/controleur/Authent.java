@@ -1,6 +1,7 @@
 package controleur;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -46,11 +47,12 @@ public class Authent extends HttpServlet {
             UsersDAO usersDAO = new UsersDAO();
             String action = req.getParameter("action");
             String vue = "";
+
             switch (action) {
                 case "login":
                     User utilisateur = usersDAO.findByUsername(userName);
 
-                    if (utilisateur == null || !utilisateur.getPassword().equals(encryptPassword(password))) {
+                    if (utilisateur == null || utilisateur.getPassword() == null || !utilisateur.getPassword().equals(encryptPassword(password))) {
                         vue = "WEB-INF/src/vue/login.jsp";
                     } else {
                         session.setAttribute("user", utilisateur);
