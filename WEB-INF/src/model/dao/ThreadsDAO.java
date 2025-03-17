@@ -67,6 +67,23 @@ public class ThreadsDAO implements DAO<Thread>{
         return threads;
     }
 
+    public ArrayList<Thread> findWhereNotOwner(int id){
+        ArrayList<Thread> threads = null;
+        try (Connection con = DS.instance.getConnection()){
+            threads = new ArrayList<Thread>();
+            String query = "SELECT * FROM threads WHERE owner_id != ?";
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                threads.add(findById(rs.getInt("id")));
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return threads;
+    }
+
     public void create(Thread thread) {
         try (Connection con = DS.instance.getConnection()){
             String query = "INSERT INTO threads (title, owner_id) VALUES (?, ?)";
@@ -88,7 +105,7 @@ public class ThreadsDAO implements DAO<Thread>{
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
-        
+
     }
 
     public void save(Thread e) {
